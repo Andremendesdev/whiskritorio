@@ -1,0 +1,135 @@
+// Prisma schema — Whiskritório
+// Banco: PostgreSQL (preparado para Neon)
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Connection string com pooling (Neon: host *-pooler*)
+  url       = env("DATABASE_URL")
+  // Connection string direta — usada por migrations (Neon: host sem -pooler)
+  directUrl = env("DIRECT_URL")
+}
+
+/// Papel do usuário do painel administrativo.
+enum Role {
+  ADMIN
+  STAFF
+}
+
+/// Status do pedido na cozinha. Valores em minúsculo para casar com a UI.
+enum OrderStatus {
+  pending
+  preparing
+  delivered
+}
+
+/// Status da impressão do pedido (QZ Tray / cozinha).
+enum OrderPrintStatus {
+  pending
+  printed
+  failed
+}
+
+/// Usuário com acesso ao admin.
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String // hash bcrypt — nunca em texto puro
+  name      String?
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+/// Categoria do cardápio (ex.: clássico, premium, especial).
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+/// Item do cardápio.
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String
+  price       Decimal     @db.Decimal(10, 2)
+  /// Preço cheio "de" — quando preenchido e maior que `price`, exibe risco + % de desconto.
+  originalPrice Decimal?  @db.Decimal(10, 2)
+  imageUrl    String?
+  active      Boolean     @default(true)
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([categoryId])
+  @@index([active])
+  @@map("products")
+}
+
+/// Pedido feito por um cliente.
+model Order {
+  id            String      @id @default(cuid())
+  customerName  String
+  phone         String
+  paymentMethod String?
+  total         Decimal     @db.Decimal(10, 2)
+  status       OrderStatus       @default(pending)
+  printStatus  OrderPrintStatus  @default(pending)
+  printedAt    DateTime?
+  items        OrderItem[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([status])
+  @@index([printStatus])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+/// Linha de um pedido (snapshot do produto no momento da compra).
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name      String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+/// Evento/promoção na agenda do Whiskritório.
+model Event {
+  id          String   @id @default(cuid())
+  band        String
+  genre       String
+  description String
+  imageUrl    String?
+  startsAt    DateTime
+  ticketUrl   String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active])
+  @@index([startsAt])
+  @@map("events")
+}

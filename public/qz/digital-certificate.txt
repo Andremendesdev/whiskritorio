@@ -1,0 +1,5 @@
+# Substitua este arquivo pelo certificado publico gerado em https://qz.io/signing
+# Formato PEM:
+# -----BEGIN CERTIFICATE-----
+# ...
+# -----END CERTIFICATE-----

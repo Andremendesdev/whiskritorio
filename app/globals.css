@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --neon: var(--color-yellow-400);
+    --neon-rgb: 250 204 21;
+    --neon-dim: var(--color-yellow-600);
+    --bg: #020203;
+    --surface: #080809;
+    --surface-2: #0e0e10;
+    --border: rgba(255, 255, 255, 0.06);
+    --text: #fafafa;
+    --text-muted: #71717a;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: "Barlow Condensed", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--neon);
+    color: #000;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--neon-dim);
+    border-radius: 2px;
+  }
+}
+
+@keyframes shrink {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+@keyframes reviews-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@layer utilities {
+  .neon-glow {
+    text-shadow:
+      0 0 20px rgb(var(--neon-rgb) / 0.6),
+      0 0 40px rgb(var(--neon-rgb) / 0.3),
+      0 0 80px rgb(var(--neon-rgb) / 0.15);
+  }
+
+  .neon-border {
+    box-shadow:
+      0 0 0 1px rgb(var(--neon-rgb) / 0.3),
+      0 0 20px rgb(var(--neon-rgb) / 0.1),
+      inset 0 0 20px rgb(var(--neon-rgb) / 0.03);
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .grain {
+    position: relative;
+  }
+
+  .reviews-marquee-track {
+    animation: reviews-marquee 55s linear infinite;
+    will-change: transform;
+  }
+
+  .reviews-marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reviews-marquee-wrap {
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .reviews-marquee-track {
+      animation: none;
+    }
+  }
+
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
