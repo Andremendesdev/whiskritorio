@@ -6,7 +6,7 @@ import { EventSection } from "@/components/EventSection";
 import { LocalSection } from "@/components/LocalSection";
 import { Preview } from "@/components/Preview";
 import { Footer } from "@/components/Footer";
-import { productService } from "@/server/services/product.service";
+import { getPublicProducts } from "@/server/get-public-products";
 import { eventService } from "@/server/services/event.service";
 import type { Event, Product } from "@/types";
 
@@ -16,7 +16,7 @@ export default async function Home() {
   let products: Product[] = [];
   let events: Event[] = [];
   try {
-    products = await productService.listActive();
+    products = await getPublicProducts();
   } catch {
     // Se o banco estiver indisponível, a vitrine renderiza vazia em vez de quebrar.
     products = [];

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { BurgersSection } from "@/components/BurgersSection";
-import { productService } from "@/server/services/product.service";
+import { getPublicProducts } from "@/server/get-public-products";
 import type { Product } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function CardapioPage() {
   let products: Product[] = [];
   try {
-    products = await productService.listActive();
+    products = await getPublicProducts();
   } catch {
     products = [];
   }
