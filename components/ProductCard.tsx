@@ -33,6 +33,8 @@ const PROMO_STYLES: Record<ProductPromo["tone"], { bg: string; color: string }> 
   offer: { bg: "rgb(var(--neon-rgb) / 0.16)", color: "var(--neon)" },
 };
 
+const EASE_OUT = [0.16, 1, 0.3, 1] as [number, number, number, number];
+
 export function ProductCard({
   product,
   index = 0,
@@ -61,12 +63,12 @@ export function ProductCard({
         initial: { opacity: 0, y: 16 },
         whileInView: { opacity: 1, y: 0 },
         viewport: { once: true, margin: "-40px" },
-        transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: index * 0.06 },
+        transition: { duration: 0.7, ease: EASE_OUT, delay: index * 0.06 },
       }
     : {
         initial: { opacity: 0, y: 16 },
         animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: index * 0.05 },
+        transition: { duration: 0.6, ease: EASE_OUT, delay: index * 0.05 },
       };
 
   return (
@@ -80,7 +82,7 @@ export function ProductCard({
       whileHover={{
         y: -4,
         boxShadow: "0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(251,191,36,0.12)",
-        transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
+        transition: { duration: 0.3, ease: EASE_OUT },
       }}
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900">
