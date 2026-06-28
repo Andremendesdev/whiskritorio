@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { categoryLabelPlural } from "@/lib/categories";
+import { resolveProductImageUrl } from "@/lib/demo-images";
 import type { Product } from "@/types";
 
 export type ProductPromo = {
@@ -50,7 +51,7 @@ export function ProductCard({
   const discountPct = hasDiscount
     ? Math.round((1 - product.price / (originalPrice as number)) * 100)
     : 0;
-  const imageSrc = product.imageUrl;
+  const imageSrc = resolveProductImageUrl(product);
 
   const handleAdd = () => {
     addBurger({ id: product.id, name: product.name, price: product.price });

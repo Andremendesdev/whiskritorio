@@ -1,11 +1,11 @@
 /**
  * Modo demo: uma única imagem premium em produtos e seção Conheça o Local.
  *
- * Ativar: NEXT_PUBLIC_DEMO_IMAGES=true no .env e reiniciar o dev server.
- * Desativar: false ou remover a variável.
+ * Local: NEXT_PUBLIC_DEMO_IMAGES=true no .env
+ * Vercel: ligado por padrão (ver next.config.ts); desligue com NEXT_PUBLIC_DEMO_IMAGES=false
  */
 
-export const DEMO_HERO_IMAGE = "/demo/local-01.jpg";
+export const DEMO_HERO_IMAGE = "/demo/local-01.png";
 
 export function isDemoImagesEnabled(): boolean {
   const raw =
